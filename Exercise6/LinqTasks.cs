@@ -164,7 +164,11 @@ namespace Exercise6
         /// </summary>
         public static IEnumerable<Emp> Task1()
         {
-            IEnumerable<Emp> result = null;
+            var methosSyntax = Emps.Where(e => e.Job.Equals("Backend programmer"));
+
+            var querySynatx = from e in Emps where e.Job.Equals("Backend programmer") select e;
+            
+            IEnumerable<Emp> result = querySynatx;
             return result;
         }
 
@@ -173,7 +177,15 @@ namespace Exercise6
         /// </summary>
         public static IEnumerable<Emp> Task2()
         {
-            IEnumerable<Emp> result = null;
+            var methodSynatx = Emps.Where(e => e.Job.Equals("Frontend programmer") && e.Salary > 1000)
+                .OrderByDescending(e => e.Ename);
+            
+            var querySyntax =
+                from e in Emps
+                where e.Job.Equals("Frontend programmer") && e.Salary > 1000
+                orderby e.Ename descending
+                select e;
+            IEnumerable<Emp> result = querySyntax;
             return result;
         }
 
@@ -183,7 +195,7 @@ namespace Exercise6
         /// </summary>
         public static int Task3()
         {
-            int result = 0;
+            int result = Emps.Max(e=>e.Salary);
             return result;
         }
 
@@ -192,7 +204,13 @@ namespace Exercise6
         /// </summary>
         public static IEnumerable<Emp> Task4()
         {
-            IEnumerable<Emp> result = null;
+            var methodSyntax = Emps.Where(e => e.Salary.Equals(Emps.Max(e => e.Salary)));
+
+            var querySyntax =
+                from e in Emps
+                where e.Salary.Equals(Emps.Max(e=>e.Salary))
+                select e;
+            IEnumerable<Emp> result = querySyntax;
             return result;
         }
 
@@ -201,7 +219,17 @@ namespace Exercise6
         /// </summary>
         public static IEnumerable<object> Task5()
         {
-            IEnumerable<object> result = null;
+            
+            var methodSyntax = 
+                Emps.Select(e => new { Nazwisko = e.Ename, Praca = e.Job });
+            
+            // Query syntax
+            var querySyntax =
+                from e in Emps
+                select new { Nazwisko = e.Ename, Praca = e.Job };
+            
+            IEnumerable<object> result = querySyntax;
+            
             return result;
         }
 
@@ -212,7 +240,14 @@ namespace Exercise6
         /// </summary>
         public static IEnumerable<object> Task6()
         {
-            IEnumerable<object> result = null;
+            var methodSyntax = Emps.Join(Depts, emp => emp.Deptno, dept => dept.Deptno,
+                ((emp, dept) => new { emp.Ename, emp.Job, dept.Dname }));
+
+            var querySyntax = from e in Emps
+                join d in Depts on e.Deptno equals d.Deptno
+                select new { e.Ename, e.Job, d.Dname };
+            
+            IEnumerable<object> result = querySyntax;
             return result;
         }
 
@@ -221,7 +256,14 @@ namespace Exercise6
         /// </summary>
         public static IEnumerable<object> Task7()
         {
-            IEnumerable<object> result = null;
+            var methodSynatx = Emps.GroupBy(e => e.Job)
+                .Select(e => new { Praca = e.Key, LiczbaPracownikow = e.Count() });
+            var querySyntax =
+                from e in Emps
+                group e by e.Job
+                into jobGroup
+                select new { Praca = jobGroup.Key, LiczbaPracownikow = jobGroup.Count() };
+             IEnumerable<object> result = querySyntax;
             return result;
         }
 
