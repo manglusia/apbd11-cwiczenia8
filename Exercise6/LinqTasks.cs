@@ -273,7 +273,13 @@ namespace Exercise6
         /// </summary>
         public static bool Task8()
         {
-            bool result = false;
+            var metodSynatx = Emps.Any(e => e.Job.Equals("Backend programm"));
+
+            var querySynatx = (from e in Emps
+                where e.Job.Equals("Backend programmer")
+                select Emps).Any();
+
+            bool result = querySynatx;
             return result;
         }
 
@@ -283,7 +289,15 @@ namespace Exercise6
         /// </summary>
         public static Emp Task9()
         {
-            Emp result = null;
+            var methodQuery = Emps.Where(e => e.Job == "Fronted programmer")
+                .OrderByDescending(e => e.HireDate).FirstOrDefault();
+            
+            var queryMethod = (from e in Emps
+                where e.Job == "Fronted programmer"
+                orderby e.HireDate descending
+                select e).FirstOrDefault();
+            
+            Emp result = queryMethod;
             return result;
         }
 
@@ -294,7 +308,12 @@ namespace Exercise6
         /// </summary>
         public static IEnumerable<object> Task10()
         {
-            IEnumerable<object> result = null;
+            var methodSyntax = Emps.Select(e => new { e.Ename, e.Job, e.HireDate })
+                .Union(new[] { new { Ename = "Brak wartości", Job = (string)null, HireDate = (DateTime?)null } });
+            var querySyntax = (from e in Emps select new { e.Ename, e.Job, e.HireDate })
+                .Union(from _ in new[] { 1 }
+                    select new { Ename = "Brak wartości", Job = (string)null, HireDate = (DateTime?)null });
+            IEnumerable<object> result = querySyntax;
             return result;
         }
 
@@ -337,7 +356,10 @@ namespace Exercise6
         /// </summary>
         public static int Task13(int[] arr)
         {
-            int result = 0;
+            var methodSynatx = arr.GroupBy(num=>num).Where(x=>x.Count()%2!=0).Select(g=>g.Key).Single();
+            var querySynatx = from num in arr
+                group num by num into x where x.Count() % 2 != 0 select x.Key;
+            int result = querySynatx.Single();
             //result=
             return result;
         }
@@ -348,7 +370,21 @@ namespace Exercise6
         /// </summary>
         public static IEnumerable<Dept> Task14()
         {
-            IEnumerable<Dept> result = null;
+            var methodSyntax = Depts
+                .GroupJoin(Emps, 
+                    dept => dept.Deptno, 
+                    emp => emp.Deptno, 
+                    (dept, empGroup) => new { Dept = dept, EmpCount = empGroup.Count() })
+                .Where(x => x.EmpCount == 5 || x.EmpCount == 0)
+                .OrderBy(x => x.Dept.Dname)
+                .Select(x => x.Dept);
+            
+            var querySyntax = from dept in Depts
+                join emp in Emps on dept.Deptno equals emp.Deptno into empGroup
+                where empGroup.Count() == 5 || empGroup.Count() == 0
+                orderby dept.Dname
+                select dept;
+            IEnumerable<Dept> result = querySyntax;
             //result =
             return result;
         }
